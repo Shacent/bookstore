@@ -84,11 +84,18 @@ export default function DashboardLayout({
   }, [isAdmin]);
 
   useEffect(() => {
-    if (!isLoading && !isAdmin) {
-      toast.error("Akses ditolak. Hanya untuk Admin.");
-      router.replace("/");
+    if (isLoading) return;
+    if (!isAdmin) {
+      if (user) {
+        // Logged in but not admin — unauthorized
+        toast.error("Akses ditolak. Hanya untuk Admin.");
+        router.replace("/");
+      } else {
+        // Not logged in — redirect to login silently
+        router.replace("/login");
+      }
     }
-  }, [isAdmin, isLoading, router]);
+  }, [isAdmin, isLoading, user, router]);
 
   const handleLogout = async () => {
     await authClient.signOut();

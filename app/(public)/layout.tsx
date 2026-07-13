@@ -41,9 +41,9 @@ export default function PublicLayout({
   const pathname = usePathname();
 
   const handleLogout = async () => {
+    router.push("/");
     await authClient.signOut();
     toast.success("Berhasil logout.");
-    router.push("/");
   };
 
   const userInitials = (user?.name || "U")
