@@ -23,7 +23,7 @@ File yang **masih ada** dan bisa jadi acuan: `prisma/schema.prisma`, `prisma/see
   npm install
   # atau: yarn install / pnpm install / bun install
   ```
-- [ ] Copy file environment: `cp .env.example .env` (jika belum ada `.env.example`, buat manual — lihat langkah 2)
+- [ ] Membuat file environtment (.env)
 
 ### 2. Setup Database Supabase
 - [ ] Buat akun / login di [supabase.com](https://supabase.com)
@@ -32,9 +32,8 @@ File yang **masih ada** dan bisa jadi acuan: `prisma/schema.prisma`, `prisma/see
 - [ ] Tambahkan ke file `.env`:
   ```
   DATABASE_URL="postgresql://...supabase pooler..."
-  DIRECT_URL="postgresql://...supabase direct..."
   ```
-- [ ] (Opsional) Tambahkan variabel auth secret, misal:
+- [ ] Tambahkan variabel better-auth secret:
   ```
   BETTER_AUTH_SECRET="isi-dengan-random-string"
   BETTER_AUTH_URL="http://localhost:3000"
@@ -42,7 +41,7 @@ File yang **masih ada** dan bisa jadi acuan: `prisma/schema.prisma`, `prisma/see
 
 ### 3. Setup Prisma & Model Database
 - [ ] Cek isi `prisma/schema.prisma` yang sudah ada, pahami struktur model yang tersedia
-- [ ] Sesuaikan `datasource db` di `schema.prisma` agar memakai `DATABASE_URL` (dan `DIRECT_URL` bila perlu) dari `.env`
+- [ ] Sesuaikan `datasource db` di `schema.prisma` agar memakai `DATABASE_URL` dari `.env`
 - [ ] Tambahkan/lengkapi model **Order** sesuai kebutuhan halaman `orders`, contoh field minimal:
   - `id`, `customerName`, `product`, `quantity`, `price`, `status`, `createdAt`
 - [ ] Jalankan migration ke Supabase:
