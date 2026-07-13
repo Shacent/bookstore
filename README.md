@@ -1,7 +1,5 @@
 # Skema Junior Web Developer: Membangun Aplikasi BookStore
 
----
-
 ## TODO List
 
 ### 1. Clone & Setup Awal
