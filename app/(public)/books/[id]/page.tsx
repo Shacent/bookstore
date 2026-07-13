@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import { safeJsonFetch } from "@/lib/safe-json";
 import {
   ShoppingCart,
   ArrowLeft,
@@ -41,10 +42,9 @@ export default function BookDetailPage({
       toast.error("Silakan login terlebih dahulu.");
       return;
     }
-    const res = await fetch("/api/cart", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ bookId: book.id, qty: 1 }),
+    const res = await safeJsonFetch("/api/cart", "POST", {
+      bookId: book.id,
+      qty: 1,
     });
     if (!res.ok) {
       const err = await res.json();

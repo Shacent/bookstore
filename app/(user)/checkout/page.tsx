@@ -17,6 +17,7 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import { safeJsonFetch } from "@/lib/safe-json";
 import { ShoppingCart, ShieldCheck, Truck, ArrowLeft } from "lucide-react";
 import { useEffect } from "react";
 
@@ -46,11 +47,7 @@ export default function CheckoutPage() {
 
   const handleCheckout = async () => {
     setIsSubmitting(true);
-    const res = await fetch("/api/orders", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ notes }),
-    });
+    const res = await safeJsonFetch("/api/orders", "POST", { notes });
     setIsSubmitting(false);
 
     if (!res.ok) {

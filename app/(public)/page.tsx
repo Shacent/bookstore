@@ -15,6 +15,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { toast } from "sonner";
+import { safeJsonFetch } from "@/lib/safe-json";
 import {
   Search,
   ShoppingCart,
@@ -63,11 +64,7 @@ export default function KatalogPage() {
       toast.error("Silakan login terlebih dahulu.");
       return;
     }
-    const res = await fetch("/api/cart", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ bookId, qty: 1 }),
-    });
+    const res = await safeJsonFetch("/api/cart", "POST", { bookId, qty: 1 });
     if (!res.ok) {
       const err = await res.json();
       toast.error(err.error || "Gagal menambah ke keranjang.");

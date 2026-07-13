@@ -21,6 +21,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { toast } from "sonner";
+import { safeJsonFetch } from "@/lib/safe-json";
 import { Mail, Send } from "lucide-react";
 import { useEffect } from "react";
 
@@ -48,11 +49,7 @@ export default function ContactPage() {
   }, [user, isLoading, router]);
 
   const onSubmit = async (values: ContactSchema) => {
-    const res = await fetch("/api/contact", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
-    });
+    const res = await safeJsonFetch("/api/contact", "POST", values);
     if (!res.ok) {
       const err = await res.json();
       toast.error(err.error || "Gagal mengirim pesan.");

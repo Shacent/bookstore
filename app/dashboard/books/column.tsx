@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/field";
 import { toast } from "sonner";
 import { mutate } from "swr";
+import { safeJsonFetch } from "@/lib/safe-json";
 import {
   Dialog,
   DialogClose,
@@ -234,11 +235,7 @@ function EditBookForm({
   });
 
   const onSubmit = async (values: BookSchema) => {
-    const res = await fetch(`/api/books/${book.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
-    });
+    const res = await safeJsonFetch(`/api/books/${book.id}`, "PUT", values);
     if (!res.ok) {
       const err = await res.json();
       toast.error(err.error || "Gagal mengupdate buku.");

@@ -31,6 +31,7 @@ import { Separator } from "@/components/ui/separator";
 import { DataTable } from "@/components/data-table";
 import { useBookColumns } from "./column";
 import { toast } from "sonner";
+import { safeJsonFetch } from "@/lib/safe-json";
 import { BookOpen, Plus } from "lucide-react";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -59,11 +60,7 @@ export default function BooksAdminPage() {
   });
 
   const onSubmit = async (values: BookSchema) => {
-    const res = await fetch("/api/books", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
-    });
+    const res = await safeJsonFetch("/api/books", "POST", values);
     if (!res.ok) {
       const err = await res.json();
       toast.error(err.error || "Gagal menambah buku.");

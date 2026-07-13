@@ -33,6 +33,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import { safeJsonFetch } from "@/lib/safe-json";
 import { Tags, Plus, Edit, Trash, BookOpen } from "lucide-react";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -61,11 +62,7 @@ export default function CategoriesPage() {
   });
 
   const onAdd = async (values: CategorySchema) => {
-    const res = await fetch("/api/categories", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
-    });
+    const res = await safeJsonFetch("/api/categories", "POST", values);
     if (!res.ok) {
       const err = await res.json();
       toast.error(err.error || "Gagal menambah kategori.");
@@ -78,11 +75,7 @@ export default function CategoriesPage() {
 
   const onEdit = async (values: CategorySchema) => {
     if (!editing) return;
-    const res = await fetch(`/api/categories/${editing.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
-    });
+    const res = await safeJsonFetch(`/api/categories/${editing.id}`, "PUT", values);
     if (!res.ok) {
       const err = await res.json();
       toast.error(err.error || "Gagal mengupdate kategori.");

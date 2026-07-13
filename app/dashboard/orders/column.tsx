@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { mutate } from "swr";
+import { safeJsonFetch } from "@/lib/safe-json";
 
 /**
  * Status badge config — warna dan label per status.
@@ -104,10 +105,8 @@ export const columns: ColumnDef<Order>[] = [
       const currentStatus = order.status;
 
       const updateStatus = async (newStatus: string) => {
-        const res = await fetch(`/api/orders/${order.id}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ status: newStatus }),
+        const res = await safeJsonFetch(`/api/orders/${order.id}`, "PATCH", {
+          status: newStatus,
         });
         if (!res.ok) {
           toast.error("Gagal mengupdate status.");

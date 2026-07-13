@@ -15,6 +15,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import { safeJsonFetch } from "@/lib/safe-json";
 import {
   ShoppingCart,
   Trash2,
@@ -73,10 +74,8 @@ export default function CartPage() {
         await removeItem(itemId);
         return;
       }
-      const res = await fetch(`/api/cart/${itemId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ qty: newQty }),
+      const res = await safeJsonFetch(`/api/cart/${itemId}`, "PATCH", {
+        qty: newQty,
       });
       if (!res.ok) {
         const err = await res.json();
