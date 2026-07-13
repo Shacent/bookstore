@@ -1,14 +1,4 @@
-# Praktikum Next.js + Prisma + Supabase + shadcn/ui
-
-Repo ini sengaja dikosongkan di beberapa bagian agar praktikan bisa belajar langsung (live coding) mulai dari clone repo sampai fitur berjalan penuh.
-
-File yang **sengaja dihapus** dan harus dibuat ulang oleh praktikan:
-- `app/api/auth/[...all]/route.ts` — handler auth (catch-all route)
-- `components/ui/button.tsx` — komponen Button dari shadcn/ui
-- `app/dashboard/orders/page.tsx` — halaman daftar orders
-- `app/dashboard/orders/column.tsx` — definisi kolom tabel orders
-
-File yang **masih ada** dan bisa jadi acuan: `prisma/schema.prisma`, `prisma/seed.ts`, folder `prisma/migrations`.
+# Skema Junior Web Developer: Membangun Aplikasi BookStore
 
 ---
 
