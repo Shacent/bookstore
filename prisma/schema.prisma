@@ -19,80 +19,6 @@ enum OrderStatus {
   CANCELLED
 }
 
-// ─── Auth Models (Better Auth) ───────────────────────────────────────────
-
-model User {
-  id            String    @id
-  name          String
-  email         String
-  emailVerified Boolean   @default(false)
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  role          String?
-  banned        Boolean?  @default(false)
-  banReason     String?
-  banExpires    DateTime?
-
-  sessions      Session[]
-  accounts      Account[]
-  cartItems     CartItem[]
-  orders        Order[]
-  messages      ContactMessage[]
-
-  @@unique([email])
-  @@map("user")
-}
-
-model Session {
-  id             String   @id
-  expiresAt      DateTime
-  token          String
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  ipAddress      String?
-  userAgent      String?
-  userId         String
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  impersonatedBy String?
-
-  @@unique([token])
-  @@index([userId])
-  @@map("session")
-}
-
-model Account {
-  id                    String    @id
-  accountId             String
-  providerId            String
-  userId                String
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  accessToken           String?
-  refreshToken          String?
-  idToken               String?
-  accessTokenExpiresAt  DateTime?
-  refreshTokenExpiresAt DateTime?
-  scope                 String?
-  password              String?
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
-
-  @@index([userId])
-  @@map("account")
-}
-
-model Verification {
-  id         String   @id
-  identifier String
-  value      String
-  expiresAt  DateTime
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  @@index([identifier])
-  @@map("verification")
-}
-
 // ─── Business Models ─────────────────────────────────────────────────────
 
 /**
@@ -145,42 +71,6 @@ model CartItem {
 
   @@unique([userId, bookId])
   @@map("cart_item")
-}
-
-/**
- * Order — pesanan / transaksi user.
- * Status: PENDING → PROCESSED → DELIVERED (atau CANCELLED).
- */
-model Order {
-  id         String      @id @default(cuid())
-  userId     String
-  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  status     OrderStatus @default(PENDING)
-  totalPrice Int
-  notes      String?
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-
-  items      OrderItem[]
-
-  @@map("order")
-}
-
-/**
- * OrderItem — item buku dalam satu pesanan.
- * Menyimpan harga per item untuk keperluan histori.
- */
-model OrderItem {
-  id      String @id @default(cuid())
-  orderId String
-  bookId  String
-  qty     Int
-  price   Int
-
-  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  book    Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
-
-  @@map("order_item")
 }
 
 /**
