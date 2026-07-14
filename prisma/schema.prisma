@@ -21,6 +21,10 @@ enum OrderStatus {
 
 // ─── Business Models ─────────────────────────────────────────────────────
 
+/**
+ * Category — klasifikasi buku (Fiksi, Non-Fiksi, Komik, dll).
+ * Admin mengelola CRUD kategori.
+ */
 model Category {
   id    String @id @default(cuid())
   name  String @unique
@@ -29,38 +33,50 @@ model Category {
   @@map("category")
 }
 
+/**
+ * Book — data buku yang dijual.
+ * Relasi ke Category; mendukung upload gambar ke Supabase Storage.
+ */
 model Book {
   id          String   @id @default(cuid())
   title       String
   author      String
   description String?
   price       Int
-  stock       Int      @default(0)
+  stock       Int       @default(0)
   imageUrl    String?
   categoryId  String
-  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
-  cartItems  CartItem[]
-  orderItems OrderItem[]
+  cartItems   CartItem[]
+  orderItems  OrderItem[]
 
   @@map("book")
 }
 
+/**
+ * CartItem — item dalam keranjang belanja user.
+ * Satu user bisa punya banyak item di keranjang.
+ */
 model CartItem {
   id     String @id @default(cuid())
   userId String
   bookId String
   qty    Int    @default(1)
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
 
   @@unique([userId, bookId])
   @@map("cart_item")
 }
 
+/**
+ * ContactMessage — pesan dari user ke admin.
+ * Fitur "Contact to Admin" untuk user.
+ */
 model ContactMessage {
   id        String   @id @default(cuid())
   userId    String
@@ -69,104 +85,4 @@ model ContactMessage {
   createdAt DateTime @default(now())
 
   @@map("contact_message")
-}
-
-model User {
-  id            String    @id
-  name          String
-  email         String
-  emailVerified Boolean   @default(false)
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  role          String?
-  banned        Boolean?  @default(false)
-  banReason     String?
-  banExpires    DateTime?
-  sessions      Session[]
-  accounts      Account[]
-
-  cartItems     CartItem[]
-  orders        Order[]
-  messages      ContactMessage[]
-
-  @@unique([email])
-  @@map("user")
-}
-
-model Session {
-  id             String   @id
-  expiresAt      DateTime
-  token          String
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  ipAddress      String?
-  userAgent      String?
-  userId         String
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  impersonatedBy String?
-
-  @@unique([token])
-  @@index([userId])
-  @@map("session")
-}
-
-model Account {
-  id                    String    @id
-  accountId             String
-  providerId            String
-  userId                String
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  accessToken           String?
-  refreshToken          String?
-  idToken               String?
-  accessTokenExpiresAt  DateTime?
-  refreshTokenExpiresAt DateTime?
-  scope                 String?
-  password              String?
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
-
-  @@index([userId])
-  @@map("account")
-}
-
-model Verification {
-  id         String   @id
-  identifier String
-  value      String
-  expiresAt  DateTime
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  @@index([identifier])
-  @@map("verification")
-}
-
-model Order {
-  id         String      @id @default(cuid())
-  userId     String
-  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  status     OrderStatus @default(PENDING)
-  totalPrice Int
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-
-  orderItems OrderItem[]
-
-  @@map("order")
-}
-
-model OrderItem {
-  id       String @id @default(cuid())
-  orderId  String
-  bookId   String
-  qty      Int   
-  price    Int
-
-  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  book  Book  @relation(fields: [bookId], references: [id], onDelete: Cascade)
-
-  @@unique([orderId, bookId])
-  @@map("order_item")
 }

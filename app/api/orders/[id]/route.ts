@@ -17,31 +17,18 @@ export async function PATCH(
     const { id } = await params;
     const body = await request.json();
 
-    // Ambil status sebelumnya untuk cek apakah stok perlu dikembalikan
-    const previous = await prisma.order.findUnique({
-      where: { id },
-      select: { status: true, orderItems: { select: { bookId: true, qty: true } } },
-    });
-
-    if (!previous) {
-      return NextResponse.json(
-        { error: "Pesanan tidak ditemukan." },
-        { status: 404 }
-      );
-    }
-
     const order = await prisma.order.update({
       where: { id },
       data: { status: body.status },
       include: {
         user: { select: { id: true, name: true, email: true } },
-        orderItems: { include: { book: true } },
+        items: { include: { book: true } },
       },
     });
 
-    // Kembalikan stok hanya jika berubah menjadi CANCELLED dari status lain
-    if (body.status === "CANCELLED" && previous.status !== "CANCELLED") {
-      for (const item of previous.orderItems) {
+    // Jika dibatalkan, kembalikan stok
+    if (body.status === "CANCELLED") {
+      for (const item of order.items) {
         await prisma.book.update({
           where: { id: item.bookId },
           data: { stock: { increment: item.qty } },

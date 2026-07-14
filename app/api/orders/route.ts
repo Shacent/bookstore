@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
       const orders = await prisma.order.findMany({
         include: {
           user: { select: { id: true, name: true, email: true } },
-          orderItems: { include: { book: true } },
+          items: { include: { book: true } },
         },
         orderBy: { createdAt: "desc" },
       });
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
     const orders = await prisma.order.findMany({
       where: { userId: session.user.id },
       include: {
-        orderItems: { include: { book: true } },
+        items: { include: { book: true } },
       },
       orderBy: { createdAt: "desc" },
     });
@@ -81,7 +81,8 @@ export async function POST(request: NextRequest) {
         data: {
           userId: session.user.id,
           totalPrice,
-          orderItems: {
+          notes: body.notes || null,
+          items: {
             create: cartItems.map((item) => ({
               bookId: item.bookId,
               qty: item.qty,
@@ -90,7 +91,7 @@ export async function POST(request: NextRequest) {
           },
         },
         include: {
-          orderItems: { include: { book: true } },
+          items: { include: { book: true } },
         },
       });
 
