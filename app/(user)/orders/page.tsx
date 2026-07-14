@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -25,7 +24,6 @@ import {
   ChevronUp,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -118,9 +116,8 @@ export default function OrdersPage() {
               id: string;
               status: string;
               totalPrice: number;
-              notes?: string;
               createdAt: string;
-              items: {
+              orderItems: {
                 id: string;
                 qty: number;
                 price: number;
@@ -169,7 +166,7 @@ export default function OrdersPage() {
                         )}
                       </span>
                       <span>
-                        {order.items.length} item
+                        {order.orderItems.length} item
                       </span>
                       <span className="font-semibold text-foreground">
                         Rp{" "}
@@ -186,7 +183,7 @@ export default function OrdersPage() {
                         <h4 className="font-medium text-sm">
                           Detail Item:
                         </h4>
-                        {order.items.map((item) => (
+                        {order.orderItems.map((item) => (
                           <div
                             key={item.id}
                             className="flex justify-between items-center text-sm"
@@ -208,14 +205,6 @@ export default function OrdersPage() {
                             </p>
                           </div>
                         ))}
-                        {order.notes && (
-                          <div className="bg-muted rounded-md p-3 mt-2">
-                            <p className="text-xs text-muted-foreground font-medium">
-                              Catatan:
-                            </p>
-                            <p className="text-sm">{order.notes}</p>
-                          </div>
-                        )}
                       </CardContent>
                     </>
                   )}
