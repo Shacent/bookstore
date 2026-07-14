@@ -9,12 +9,10 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { safeJsonFetch } from "@/lib/safe-json";
@@ -25,12 +23,11 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 /**
  * CheckoutPage — konfirmasi pesanan dengan metode COD (Cash on Delivery).
- * Menampilkan ringkasan order + optional notes, lalu tombol konfirmasi.
+ * Menampilkan ringkasan order, lalu tombol konfirmasi.
  */
 export default function CheckoutPage() {
   const { user, isLoading: isLoadingSession } = useSession();
   const router = useRouter();
-  const [notes, setNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { data: cartItems, isLoading } = useSWR(
@@ -47,7 +44,7 @@ export default function CheckoutPage() {
 
   const handleCheckout = async () => {
     setIsSubmitting(true);
-    const res = await safeJsonFetch("/api/orders", "POST", { notes });
+    const res = await safeJsonFetch("/api/orders", "POST", {});
     setIsSubmitting(false);
 
     if (!res.ok) {
@@ -168,22 +165,6 @@ export default function CheckoutPage() {
               </p>
             </div>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Notes */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Catatan (Opsional)</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Textarea
-            placeholder="Contoh: alamat lengkap, warna, atau instruksi khusus..."
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            rows={3}
-            maxLength={500}
-          />
         </CardContent>
       </Card>
 
